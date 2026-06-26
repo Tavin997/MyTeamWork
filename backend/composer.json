@@ -1,14 +1,23 @@
 {
     "name": "myteamwork/backend",
-    "description": "Backend MyTeamWork com Elefant",
+    "description": "Backend MyTeamWork com Elefant Framework",
     "type": "project",
     "require": {
         "php": ">=8.0",
         "elefant/elefant": "^1.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
     "autoload": {
         "psr-4": {
             "apps\\": "apps/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "mkdir -p tmp/cache tmp/logs",
+            "chmod 777 tmp/cache tmp/logs"
+        ]
     }
 }

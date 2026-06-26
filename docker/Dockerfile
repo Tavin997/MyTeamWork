@@ -25,7 +25,7 @@ RUN a2enmod rewrite \
     && a2enmod headers \
     && a2enmod expires
 
-# Configuração do Apache inline (evita arquivo externo)
+# Configuração do Apache inline
 RUN echo '<VirtualHost *:80>\n\
     ServerAdmin webmaster@localhost\n\
     DocumentRoot /var/www/html/public\n\
@@ -47,11 +47,18 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # WORKDIR para backend
 WORKDIR /var/www/html
 
-# Copia arquivos do backend (primeiro apenas composer para cache)
-COPY backend/composer.json backend/composer.lock ./
+# Copia arquivos do backend (tratando composer.lock como opcional)
+COPY backend/composer.json ./
+# Se composer.lock existir, copia; senão, ignora
+COPY backend/composer.lock ./ 2>/dev/null || true
 
 # Instala dependências do backend (Elefant)
-RUN composer install --no-dev --optimize-autoloader
+# Se composer.lock existir, usa-o; senão, faz install normal
+RUN if [ -f composer.lock ]; then \
+        composer install --no-dev --optimize-autoloader; \
+    else \
+        composer install --no-dev --optimize-autoloader; \
+    fi
 
 # Copia resto do código do backend
 COPY backend/ .
@@ -74,14 +81,14 @@ WORKDIR /app
 # Copia e instala dependências do frontend
 COPY frontend/package*.json ./
 
-# Instala dependências (usando npm ci para produção)
-RUN npm ci --only=production || npm install --production
+# Instala dependências
+RUN npm ci --only=production 2>/dev/null || npm install --production
 
 # Copia código fonte do frontend
 COPY frontend/ .
 
 # Build do Astro
-RUN npm run build || (echo "Build falhou, criando diretório dist vazio" && mkdir -p dist)
+RUN npm run build || (echo "⚠️ Build falhou, criando diretório dist vazio" && mkdir -p dist)
 
 # --- STAGE FINAL ---
 FROM backend
@@ -98,7 +105,6 @@ ENV PHP_MEMORY_LIMIT=256M \
     PHP_UPLOAD_MAX_FILESIZE=50M \
     PHP_POST_MAX_SIZE=50M
 
-# Porta que será exposta
 EXPOSE 80
 
 ENTRYPOINT ["entrypoint.sh"]
