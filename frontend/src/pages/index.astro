@@ -1,0 +1,45 @@
+// frontend/src/pages/index.astro
+---
+import Layout from '../layouts/MainLayout.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+---
+
+<Layout title="MyTeamWork - Gerenciamento de Tarefas em Equipe">
+    <Hero />
+    <Features />
+</Layout>
+
+// frontend/src/pages/dashboard.astro (SSR)
+---
+import Layout from '../layouts/DashboardLayout.astro';
+import TaskList from '../components/TaskList.astro';
+import ProjectOverview from '../components/ProjectOverview.astro';
+import TeamMembers from '../components/TeamMembers.astro';
+
+// Busca dados do backend via API
+const response = await fetch(`${Astro.url.origin}/api/dashboard`);
+const data = await response.json();
+---
+
+<Layout>
+    <div class="dashboard-grid">
+        <ProjectOverview projects={data.projects} />
+        <TaskList tasks={data.tasks} />
+        <TeamMembers members={data.members} />
+    </div>
+</Layout>
+
+// frontend/src/pages/board/[id].astro (SSR)
+---
+import Layout from '../layouts/DashboardLayout.astro';
+import Board from '../components/Board.astro';
+import { getProjectById } from '../lib/api';
+
+const { id } = Astro.params;
+const project = await getProjectById(id);
+---
+
+<Layout title={`${project.name} - MyTeamWork`}>
+    <Board project={project} />
+</Layout>
