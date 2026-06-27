@@ -1,0 +1,466 @@
+/* ============================================ */
+/* VARIÁVEIS DE DESIGN SYSTEM */
+/* ============================================ */
+:root {
+    --primary: #4F46E5;
+    --primary-dark: #4338CA;
+    --primary-light: #818CF8;
+    --secondary: #7C3AED;
+    --gradient-start: #4F46E5;
+    --gradient-end: #7C3AED;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --transition-default: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================ */
+/* RESET E BASE */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    padding-top: 76px;
+    overflow-x: hidden;
+    color: #1E293B;
+    background-color: #F8FAFC;
+}
+
+/* ============================================ */
+/* TIPOGRAFIA */
+/* ============================================ */
+.text-gradient {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================ */
+/* NAVBAR - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+#mainNav {
+    transition: var(--transition-default);
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#mainNav .navbar-brand {
+    color: var(--primary);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+#mainNav .navbar-brand i {
+    font-size: 1.5rem;
+}
+
+#mainNav .nav-link {
+    font-weight: 500;
+    color: #475569;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+#mainNav .nav-link:hover {
+    color: var(--primary);
+}
+
+#mainNav .nav-link.active {
+    color: var(--primary);
+}
+
+#mainNav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+#mainNav .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    transition: var(--transition-default);
+}
+
+#mainNav .btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+#mainNav .btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+#mainNav .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+#mainNav .btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* ============================================ */
+/* HERO SECTION - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+.hero-section {
+    background: linear-gradient(180deg, #EEF2FF 0%, #FFFFFF 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content .badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 50px;
+}
+
+.hero-content .display-3 {
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+}
+
+.hero-content .lead {
+    max-width: 90%;
+    line-height: 1.7;
+}
+
+.hero-content .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.8rem 2.5rem;
+    transition: var(--transition-default);
+}
+
+.hero-content .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+}
+
+.hero-content .btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+}
+
+.hero-content .btn-outline-secondary {
+    border-color: #CBD5E1;
+    color: #475569;
+}
+
+.hero-content .btn-outline-secondary:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+    transform: translateY(-2px);
+}
+
+.avatar-group img {
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.hero-illustration .card {
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 2;
+}
+
+.hero-illustration .card .progress {
+    border-radius: 50px;
+}
+
+/* ============================================ */
+/* FEATURES - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+.feature-card {
+    transition: var(--transition-default);
+    border-radius: 16px;
+    background: white;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    transition: var(--transition-default);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.feature-card .card-title {
+    font-size: 1.2rem;
+    color: #0F172A;
+}
+
+.feature-card .card-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ============================================ */
+/* PRICING - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+.pricing-card {
+    transition: var(--transition-default);
+    border-radius: 16px;
+}
+
+.pricing-card:hover {
+    transform: translateY(-4px);
+}
+
+.pricing-card.featured {
+    border: 2px solid var(--primary);
+    position: relative;
+    transform: scale(1.02);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.04);
+}
+
+.pricing-card .card-header {
+    border-radius: 16px 16px 0 0;
+    padding: 0.5rem;
+}
+
+.pricing-card .display-4 {
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.pricing-card .btn {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.6rem;
+}
+
+/* ============================================ */
+/* CONTACT - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+#contact .form-control {
+    border-radius: 12px;
+    border-color: #E2E8F0;
+    transition: var(--transition-default);
+}
+
+#contact .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+#contact .btn-primary {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.8rem;
+    background: var(--primary);
+    border-color: var(--primary);
+    transition: var(--transition-default);
+}
+
+#contact .btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+}
+
+/* ============================================ */
+/* CTA - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+section[style*="background: linear-gradient"] .btn-light {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.8rem 2.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: var(--transition-default);
+}
+
+section[style*="background: linear-gradient"] .btn-light:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+section[style*="background: linear-gradient"] .btn-outline-light {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.8rem 2.5rem;
+    transition: var(--transition-default);
+}
+
+section[style*="background: linear-gradient"] .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* ============================================ */
+/* FOOTER - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+footer .list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+footer .list-unstyled a {
+    transition: color 0.2s ease;
+    font-size: 0.95rem;
+}
+
+footer .list-unstyled a:hover {
+    color: white !important;
+}
+
+footer hr {
+    opacity: 0.2;
+}
+
+/* ============================================ */
+/* RESPONSIVIDADE - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+@media (max-width: 991.98px) {
+    body {
+        padding-top: 68px;
+    }
+
+    .hero-content .display-3 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content .lead {
+        max-width: 100%;
+        font-size: 1.1rem !important;
+    }
+
+    .hero-content .btn {
+        padding: 0.6rem 1.8rem;
+        font-size: 0.95rem;
+    }
+
+    #mainNav .btn {
+        padding: 0.4rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    #mainNav .nav-link {
+        padding: 0.4rem 0.75rem;
+    }
+
+    .hero-illustration .card {
+        display: none;
+    }
+
+    .pricing-card.featured {
+        transform: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content .display-3 {
+        font-size: 2rem;
+    }
+
+    .hero-content .d-flex {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .hero-content .d-flex .btn {
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+
+    .feature-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-icon {
+        width: 56px;
+        height: 56px;
+    }
+
+    .feature-icon i {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* ============================================ */
+/* UTILITY CLASSES - ESTILOS DE APRESENTAÇÃO */
+/* ============================================ */
+.bg-primary.bg-opacity-10 {
+    background-color: rgba(79, 70, 229, 0.1) !important;
+}
+
+.bg-success.bg-opacity-10 {
+    background-color: rgba(34, 197, 94, 0.1) !important;
+}
+
+.bg-warning.bg-opacity-10 {
+    background-color: rgba(234, 179, 8, 0.1) !important;
+}
+
+.bg-danger.bg-opacity-10 {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.bg-info.bg-opacity-10 {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+}
+
+.bg-secondary.bg-opacity-10 {
+    background-color: rgba(100, 116, 139, 0.1) !important;
+}
+
+/* ============================================ */
+/* SCROLL BEHAVIOR - APENAS APRESENTAÇÃO */
+/* ============================================ */
+html {
+    scroll-behavior: smooth;
+}
