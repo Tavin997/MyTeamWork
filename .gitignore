@@ -1,0 +1,6 @@
+#config do vscode
+.vscode/
+
+# arquivos sensíveis
+*.env
+
