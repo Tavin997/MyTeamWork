@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "Pages",
-        "Deploy"
+        "Deploy",
+        "All Project"
     ]
 }
