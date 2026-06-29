@@ -1,11 +1,7 @@
 <?php
 
-namespace MyTeamWork\Controllers;
+namespace MyTeamWork\Controller;
 
-/**
- * ApiController - Base para todos os controllers
- * Gerencia respostas e validações
- */
 abstract class ApiController
 {
     protected const STATUS_OK = 200;
@@ -16,9 +12,6 @@ abstract class ApiController
     protected const STATUS_NOT_FOUND = 404;
     protected const STATUS_SERVER_ERROR = 500;
 
-    /**
-     * Envia resposta JSON
-     */
     protected function jsonResponse(array $data, int $statusCode = 200): void
     {
         http_response_code($statusCode);
@@ -27,21 +20,15 @@ abstract class ApiController
         exit;
     }
 
-    /**
-     * Resposta de sucesso
-     */
-    protected function success(array $data = [], string $message = 'Operação realizada com sucesso'): void
+    protected function success(array $data = [], string $message = 'Operação realizada com sucesso', int $statusCode = 200): void
     {
         $this->jsonResponse([
             'success' => true,
             'message' => $message,
             'data' => $data
-        ], self::STATUS_OK);
+        ], $statusCode);
     }
 
-    /**
-     * Resposta de erro
-     */
     protected function error(string $message, int $statusCode = 400, array $errors = []): void
     {
         $response = [
@@ -56,9 +43,6 @@ abstract class ApiController
         $this->jsonResponse($response, $statusCode);
     }
 
-    /**
-     * Valida campos obrigatórios
-     */
     protected function validateRequired(array $data, array $requiredFields): ?array
     {
         $errors = [];
@@ -72,17 +56,11 @@ abstract class ApiController
         return !empty($errors) ? $errors : null;
     }
 
-    /**
-     * Valida email
-     */
     protected function validateEmail(string $email): bool
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    /**
-     * Sanitiza entrada
-     */
     protected function sanitizeInput(array $data): array
     {
         $sanitized = [];
@@ -99,9 +77,6 @@ abstract class ApiController
         return $sanitized;
     }
 
-    /**
-     * Obtém dados da requisição
-     */
     protected function getRequestData(): array
     {
         $input = file_get_contents('php://input');
@@ -114,9 +89,6 @@ abstract class ApiController
         return $data ?? [];
     }
 
-    /**
-     * Obtém parâmetros da URL
-     */
     protected function getUrlParams(): array
     {
         $params = [];
@@ -131,9 +103,6 @@ abstract class ApiController
         return $params;
     }
 
-    /**
-     * Log de erros
-     */
     protected function logError(string $message, array $context = []): void
     {
         $logMessage = sprintf(

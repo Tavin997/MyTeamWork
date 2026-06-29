@@ -1,6 +1,6 @@
 <?php
 
-namespace MyTeamWork\Controllers;
+namespace MyTeamWork\Controller;
 
 use MyTeamWork\Models\User;
 
@@ -13,9 +13,6 @@ class UserController extends ApiController
         $this->userModel = new User();
     }
 
-    /**
-     * GET /users - Lista todos os usuários
-     */
     public function index(): void
     {
         $page = (int) ($_GET['page'] ?? 1);
@@ -35,9 +32,6 @@ class UserController extends ApiController
         ]);
     }
 
-    /**
-     * GET /users/{id} - Busca usuário por ID
-     */
     public function show(int $id): void
     {
         $user = $this->userModel->find($id);
@@ -50,15 +44,11 @@ class UserController extends ApiController
         $this->success(['user' => $user]);
     }
 
-    /**
-     * POST /users - Cria um novo usuário
-     */
     public function store(): void
     {
         $data = $this->getRequestData();
         $data = $this->sanitizeInput($data);
 
-        // Valida campos obrigatórios
         $required = ['nome', 'email', 'senha'];
         $errors = $this->validateRequired($data, $required);
 
@@ -67,13 +57,11 @@ class UserController extends ApiController
             return;
         }
 
-        // Valida email
         if (!$this->validateEmail($data['email'])) {
             $this->error('Email inválido', self::STATUS_BAD_REQUEST);
             return;
         }
 
-        // Verifica se email já existe
         $existingUser = $this->userModel->findByEmail($data['email']);
         if ($existingUser) {
             $this->error('Email já cadastrado', self::STATUS_BAD_REQUEST);
@@ -95,22 +83,17 @@ class UserController extends ApiController
         }
     }
 
-    /**
-     * PUT /users/{id} - Atualiza um usuário
-     */
     public function update(int $id): void
     {
         $data = $this->getRequestData();
         $data = $this->sanitizeInput($data);
 
-        // Verifica se usuário existe
         $user = $this->userModel->find($id);
         if (!$user) {
             $this->error('Usuário não encontrado', self::STATUS_NOT_FOUND);
             return;
         }
 
-        // Valida email se for alterado
         if (isset($data['email']) && $data['email'] !== $user['email']) {
             if (!$this->validateEmail($data['email'])) {
                 $this->error('Email inválido', self::STATUS_BAD_REQUEST);
@@ -139,9 +122,6 @@ class UserController extends ApiController
         }
     }
 
-    /**
-     * DELETE /users/{id} - Remove um usuário
-     */
     public function delete(int $id): void
     {
         $user = $this->userModel->find($id);
@@ -164,9 +144,6 @@ class UserController extends ApiController
         }
     }
 
-    /**
-     * GET /users/{id}/tasks - Busca tarefas do usuário
-     */
     public function getTasks(int $id): void
     {
         $user = $this->userModel->find($id);
@@ -188,9 +165,6 @@ class UserController extends ApiController
         ]);
     }
 
-    /**
-     * GET /users/{id}/teams - Busca equipes do usuário
-     */
     public function getTeams(int $id): void
     {
         $user = $this->userModel->find($id);
@@ -200,13 +174,9 @@ class UserController extends ApiController
         }
 
         $teams = $this->userModel->getTeams($id);
-        
         $this->success(['teams' => $teams]);
     }
 
-    /**
-     * GET /users/{id}/stats - Estatísticas do usuário
-     */
     public function getStats(int $id): void
     {
         $user = $this->userModel->find($id);
@@ -215,7 +185,7 @@ class UserController extends ApiController
             return;
         }
 
-        $taskModel = new \MyTeamWork\Models\Task();
+        $taskModel = new \MyTeamWork\Model\Task();
         $stats = $taskModel->getStats($id);
         
         $this->success(['stats' => $stats]);

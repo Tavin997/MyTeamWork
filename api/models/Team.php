@@ -18,9 +18,6 @@ class Team extends BaseModel
         ];
     }
 
-    /**
-     * Busca equipes ativas (não excluídas)
-     */
     public function findActive(int $page = 1, int $limit = 50): array
     {
         $offset = ($page - 1) * $limit;
@@ -34,9 +31,6 @@ class Team extends BaseModel
         return $this->fetchAll($stmt);
     }
 
-    /**
-     * Busca membros da equipe
-     */
     public function getMembers(int $teamId): array
     {
         $sql = "
@@ -52,9 +46,6 @@ class Team extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Adiciona membro à equipe
-     */
     public function addMember(int $teamId, int $userId, int $roleId): bool
     {
         $sql = "INSERT INTO team_members (equipe_id, usuario_id, cargo_id) VALUES (:team_id, :user_id, :role_id)";
@@ -67,16 +58,12 @@ class Team extends BaseModel
         ]);
 
         if ($result) {
-            // Atualiza contador de membros
             $this->updateMemberCount($teamId);
         }
 
         return $result;
     }
 
-    /**
-     * Remove membro da equipe
-     */
     public function removeMember(int $teamId, int $userId): bool
     {
         $sql = "DELETE FROM team_members WHERE equipe_id = :team_id AND usuario_id = :user_id";
@@ -94,9 +81,6 @@ class Team extends BaseModel
         return $result;
     }
 
-    /**
-     * Atualiza contador de membros
-     */
     private function updateMemberCount(int $teamId): void
     {
         $sql = "UPDATE {$this->table} SET membros = (SELECT COUNT(*) FROM team_members WHERE equipe_id = :team_id) WHERE id = :team_id";
@@ -104,9 +88,6 @@ class Team extends BaseModel
         $stmt->execute([':team_id' => $teamId]);
     }
 
-    /**
-     * Busca tarefas da equipe
-     */
     public function getTeamTasks(int $teamId): array
     {
         $sql = "

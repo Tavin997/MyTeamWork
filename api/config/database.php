@@ -27,7 +27,7 @@ class Database
 
     private function loadConfig(): array
     {
-        // Carregar .env manualmente se necessário
+        // Carrega .env do diretório raiz
         if (file_exists(__DIR__ . '/../../.env')) {
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
@@ -57,21 +57,10 @@ class Database
             $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-            // Verifica conexão SSL
-            $stmt = $this->connection->query("SHOW STATUS LIKE 'Ssl_cipher'");
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($result && $result['Value']) {
-                error_log("✅ SSL Connection established with cipher: " . $result['Value']);
-            } else {
-                error_log("⚠️ SSL Connection not active");
-            }
-
             $this->connection->exec("SET NAMES utf8mb4");
             $this->connection->exec("SET time_zone = '+00:00'");
 
         } catch (PDOException $e) {
-            error_log("❌ Database connection failed: " . $e->getMessage());
             throw new \RuntimeException("Database connection failed: " . $e->getMessage());
         }
     }
@@ -80,7 +69,6 @@ class Database
     {
         $dsn = "{$this->config['driver']}:host={$this->config['host']};port={$this->config['port']};dbname={$this->config['name']};charset=utf8mb4";
 
-        // Configuração SSL para AIVEN
         if ($this->config['ssl_ca'] && file_exists($this->config['ssl_ca'])) {
             $dsn .= ";sslmode=verify-ca";
             $dsn .= ";sslca={$this->config['ssl_ca']}";
@@ -92,11 +80,6 @@ class Database
             if ($this->config['ssl_key'] && file_exists($this->config['ssl_key'])) {
                 $dsn .= ";sslkey={$this->config['ssl_key']}";
             }
-        } else {
-            // Fallback para SSL mode required sem verificação de certificado
-            // Usado quando os certificados não estão disponíveis
-            $dsn .= ";sslmode=required";
-            error_log("⚠️ SSL CA certificate not found, using sslmode=required");
         }
 
         return $dsn;
@@ -107,7 +90,6 @@ class Database
         $options = [
             PDO::ATTR_STRINGIFY_FETCHES => false,
             PDO::ATTR_PERSISTENT => false,
-            PDO::ATTR_TIMEOUT => 10, // 10 segundos de timeout
         ];
 
         if ($this->config['driver'] === 'mysql') {
@@ -119,9 +101,6 @@ class Database
 
     public function getConnection(): PDO
     {
-        if ($this->connection === null) {
-            $this->connect();
-        }
         return $this->connection;
     }
 

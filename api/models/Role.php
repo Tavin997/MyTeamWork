@@ -15,9 +15,6 @@ class Role extends BaseModel
         ];
     }
 
-    /**
-     * Busca papel por nome
-     */
     public function findByName(string $name): ?array
     {
         $sql = "SELECT * FROM {$this->table} WHERE papel = :papel LIMIT 1";
@@ -26,9 +23,6 @@ class Role extends BaseModel
         return $this->fetch($stmt);
     }
 
-    /**
-     * Roles padrão do sistema
-     */
     public function getDefaultRoles(): array
     {
         return [
@@ -41,9 +35,6 @@ class Role extends BaseModel
         ];
     }
 
-    /**
-     * Inicializa roles padrão
-     */
     public function seedDefaultRoles(): void
     {
         $defaultRoles = $this->getDefaultRoles();

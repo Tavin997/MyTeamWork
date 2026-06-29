@@ -1,9 +1,8 @@
 <?php
 
-namespace MyTeamWork\Controllers;
+namespace MyTeamWork\Controller;
 
 use MyTeamWork\Models\User;
-use MyTeamWork\Models\Role;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -18,14 +17,10 @@ class AuthController extends ApiController
         $this->jwtSecret = $_ENV['JWT_SECRET'] ?? 'default-secret-change-me';
     }
 
-    /**
-     * POST /auth/login - Autentica usuário
-     */
     public function login(): void
     {
         $data = $this->getRequestData();
         
-        // Valida campos obrigatórios
         $required = ['email', 'senha'];
         $errors = $this->validateRequired($data, $required);
 
@@ -34,13 +29,11 @@ class AuthController extends ApiController
             return;
         }
 
-        // Valida email
         if (!$this->validateEmail($data['email'])) {
             $this->error('Email inválido', self::STATUS_BAD_REQUEST);
             return;
         }
 
-        // Autentica
         $user = $this->userModel->authenticate($data['email'], $data['senha']);
 
         if (!$user) {
@@ -48,13 +41,11 @@ class AuthController extends ApiController
             return;
         }
 
-        // Verifica se usuário está ativo
         if ($user['estado'] !== 'ativo') {
             $this->error('Usuário inativo ou bloqueado', self::STATUS_FORBIDDEN);
             return;
         }
 
-        // Gera JWT
         $token = $this->generateToken($user);
 
         $this->success([
@@ -69,15 +60,11 @@ class AuthController extends ApiController
         ], 'Login realizado com sucesso');
     }
 
-    /**
-     * POST /auth/register - Registra novo usuário
-     */
     public function register(): void
     {
         $data = $this->getRequestData();
         $data = $this->sanitizeInput($data);
 
-        // Valida campos obrigatórios
         $required = ['nome', 'email', 'senha'];
         $errors = $this->validateRequired($data, $required);
 
@@ -86,13 +73,11 @@ class AuthController extends ApiController
             return;
         }
 
-        // Valida email
         if (!$this->validateEmail($data['email'])) {
             $this->error('Email inválido', self::STATUS_BAD_REQUEST);
             return;
         }
 
-        // Verifica se email já existe
         $existingUser = $this->userModel->findByEmail($data['email']);
         if ($existingUser) {
             $this->error('Email já cadastrado', self::STATUS_BAD_REQUEST);
@@ -100,9 +85,7 @@ class AuthController extends ApiController
         }
 
         try {
-            // Define estado como ativo por padrão
             $data['estado'] = 'ativo';
-            
             $userId = $this->userModel->create($data);
             
             if ($userId) {
@@ -128,20 +111,11 @@ class AuthController extends ApiController
         }
     }
 
-    /**
-     * POST /auth/logout - Logout (invalida token)
-     */
     public function logout(): void
     {
-        // Em JWT stateless, o logout é feito pelo cliente descartando o token
-        // Podemos implementar blacklist se necessário
-        
         $this->success([], 'Logout realizado com sucesso');
     }
 
-    /**
-     * POST /auth/refresh - Renova token
-     */
     public function refresh(): void
     {
         $headers = getallheaders();
@@ -156,21 +130,13 @@ class AuthController extends ApiController
         
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            
-            // Busca usuário atualizado
             $user = $this->userModel->find($decoded->user_id);
             
-            if (!$user) {
-                $this->error('Usuário não encontrado', self::STATUS_UNAUTHORIZED);
+            if (!$user || $user['estado'] !== 'ativo') {
+                $this->error('Usuário não encontrado ou inativo', self::STATUS_UNAUTHORIZED);
                 return;
             }
 
-            if ($user['estado'] !== 'ativo') {
-                $this->error('Usuário inativo', self::STATUS_FORBIDDEN);
-                return;
-            }
-
-            // Gera novo token
             $newToken = $this->generateToken($user);
 
             $this->success([
@@ -183,9 +149,6 @@ class AuthController extends ApiController
         }
     }
 
-    /**
-     * GET /auth/me - Dados do usuário logado
-     */
     public function me(): void
     {
         $headers = getallheaders();
@@ -200,7 +163,6 @@ class AuthController extends ApiController
         
         try {
             $decoded = JWT::decode($token, new Key($this->jwtSecret, 'HS256'));
-            
             $user = $this->userModel->find($decoded->user_id);
             
             if (!$user) {
@@ -209,7 +171,6 @@ class AuthController extends ApiController
             }
 
             unset($user['senha']);
-
             $this->success(['user' => $user]);
 
         } catch (\Exception $e) {
@@ -217,9 +178,6 @@ class AuthController extends ApiController
         }
     }
 
-    /**
-     * Gera token JWT
-     */
     private function generateToken(array $user): string
     {
         $issuedAt = time();
@@ -237,9 +195,6 @@ class AuthController extends ApiController
         return JWT::encode($payload, $this->jwtSecret, 'HS256');
     }
 
-    /**
-     * Middleware - Verifica token
-     */
     public static function authenticate(): ?array
     {
         $headers = getallheaders();

@@ -1,6 +1,6 @@
 <?php
 
-namespace MyTeamWork\Controllers;
+namespace MyTeamWork\Controller;
 
 use MyTeamWork\Models\Task;
 use MyTeamWork\Models\TaskAssignment;
@@ -16,9 +16,6 @@ class TaskController extends ApiController
         $this->assignmentModel = new TaskAssignment();
     }
 
-    /**
-     * GET /tasks - Lista todas as tarefas
-     */
     public function index(): void
     {
         $page = (int) ($_GET['page'] ?? 1);
@@ -47,9 +44,6 @@ class TaskController extends ApiController
         ]);
     }
 
-    /**
-     * GET /tasks/{id} - Busca tarefa por ID
-     */
     public function show(int $id): void
     {
         $task = $this->taskModel->getWithAssignments($id);
@@ -62,15 +56,11 @@ class TaskController extends ApiController
         $this->success(['task' => $task]);
     }
 
-    /**
-     * POST /tasks - Cria uma nova tarefa
-     */
     public function store(): void
     {
         $data = $this->getRequestData();
         $data = $this->sanitizeInput($data);
 
-        // Valida campos obrigatórios
         $required = ['usuario_id', 'nome'];
         $errors = $this->validateRequired($data, $required);
 
@@ -79,14 +69,12 @@ class TaskController extends ApiController
             return;
         }
 
-        // Valida prioridade
         $validPriorities = ['baixa', 'media', 'alta', 'urgente'];
         if (isset($data['prioridade']) && !in_array($data['prioridade'], $validPriorities)) {
             $this->error('Prioridade inválida', self::STATUS_BAD_REQUEST);
             return;
         }
 
-        // Valida estado
         $validStatuses = ['pendente', 'em_andamento', 'concluida', 'cancelada'];
         if (isset($data['estado']) && !in_array($data['estado'], $validStatuses)) {
             $this->error('Estado inválido', self::STATUS_BAD_REQUEST);
@@ -97,7 +85,6 @@ class TaskController extends ApiController
             $taskId = $this->taskModel->create($data);
             
             if ($taskId) {
-                // Se houver usuários atribuídos
                 if (isset($data['assigned_users']) && is_array($data['assigned_users'])) {
                     $this->assignmentModel->assignUsersToTask($taskId, $data['assigned_users']);
                 }
@@ -113,9 +100,6 @@ class TaskController extends ApiController
         }
     }
 
-    /**
-     * PUT /tasks/{id} - Atualiza uma tarefa
-     */
     public function update(int $id): void
     {
         $data = $this->getRequestData();
@@ -127,14 +111,12 @@ class TaskController extends ApiController
             return;
         }
 
-        // Valida prioridade
         $validPriorities = ['baixa', 'media', 'alta', 'urgente'];
         if (isset($data['prioridade']) && !in_array($data['prioridade'], $validPriorities)) {
             $this->error('Prioridade inválida', self::STATUS_BAD_REQUEST);
             return;
         }
 
-        // Valida estado
         $validStatuses = ['pendente', 'em_andamento', 'concluida', 'cancelada'];
         if (isset($data['estado']) && !in_array($data['estado'], $validStatuses)) {
             $this->error('Estado inválido', self::STATUS_BAD_REQUEST);
@@ -145,7 +127,6 @@ class TaskController extends ApiController
             $updated = $this->taskModel->update($id, $data);
             
             if ($updated) {
-                // Atualiza atribuições se fornecidas
                 if (isset($data['assigned_users']) && is_array($data['assigned_users'])) {
                     $this->assignmentModel->assignUsersToTask($id, $data['assigned_users']);
                 }
@@ -161,9 +142,6 @@ class TaskController extends ApiController
         }
     }
 
-    /**
-     * DELETE /tasks/{id} - Remove uma tarefa
-     */
     public function delete(int $id): void
     {
         $task = $this->taskModel->find($id);
@@ -173,9 +151,7 @@ class TaskController extends ApiController
         }
 
         try {
-            // Remove atribuições primeiro
             $this->assignmentModel->removeTaskAssignments($id);
-            
             $deleted = $this->taskModel->delete($id);
             
             if ($deleted) {
@@ -189,9 +165,6 @@ class TaskController extends ApiController
         }
     }
 
-    /**
-     * PATCH /tasks/{id}/status - Atualiza apenas o status
-     */
     public function updateStatus(int $id): void
     {
         $data = $this->getRequestData();
@@ -224,9 +197,6 @@ class TaskController extends ApiController
         }
     }
 
-    /**
-     * GET /tasks/stats - Estatísticas gerais
-     */
     public function getStats(): void
     {
         $userId = (int) ($_GET['user_id'] ?? 0);
@@ -235,8 +205,8 @@ class TaskController extends ApiController
         if ($userId > 0) {
             $stats = $this->taskModel->getStats($userId);
         } else {
-            // Estatísticas gerais
-            $sql = "
+            $db = $this->taskModel->db->getConnection();
+            $stmt = $db->query("
                 SELECT 
                     COUNT(*) as total,
                     SUM(CASE WHEN estado = 'pendente' THEN 1 ELSE 0 END) as pendentes,
@@ -244,10 +214,7 @@ class TaskController extends ApiController
                     SUM(CASE WHEN estado = 'concluida' THEN 1 ELSE 0 END) as concluidas,
                     SUM(CASE WHEN estado = 'cancelada' THEN 1 ELSE 0 END) as canceladas
                 FROM tasks
-            ";
-            
-            $db = $this->taskModel->db->getConnection();
-            $stmt = $db->query($sql);
+            ");
             $stats = $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 

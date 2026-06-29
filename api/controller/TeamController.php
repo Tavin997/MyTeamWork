@@ -1,6 +1,6 @@
 <?php
 
-namespace MyTeamWork\Controllers;
+namespace MyTeamWork\Controller;
 
 use MyTeamWork\Models\Team;
 use MyTeamWork\Models\TeamMember;
@@ -19,9 +19,6 @@ class TeamController extends ApiController
         $this->roleModel = new Role();
     }
 
-    /**
-     * GET /teams - Lista todas as equipes
-     */
     public function index(): void
     {
         $page = (int) ($_GET['page'] ?? 1);
@@ -47,9 +44,6 @@ class TeamController extends ApiController
         ]);
     }
 
-    /**
-     * GET /teams/{id} - Busca equipe por ID
-     */
     public function show(int $id): void
     {
         $team = $this->teamModel->find($id);
@@ -59,22 +53,17 @@ class TeamController extends ApiController
             return;
         }
 
-        // Busca membros
         $members = $this->teamModel->getMembers($id);
         $team['members'] = $members;
 
         $this->success(['team' => $team]);
     }
 
-    /**
-     * POST /teams - Cria uma nova equipe
-     */
     public function store(): void
     {
         $data = $this->getRequestData();
         $data = $this->sanitizeInput($data);
 
-        // Valida campos obrigatórios
         $required = ['nome'];
         $errors = $this->validateRequired($data, $required);
 
@@ -87,7 +76,6 @@ class TeamController extends ApiController
             $teamId = $this->teamModel->create($data);
             
             if ($teamId) {
-                // Adiciona criador como admin se informado
                 if (isset($data['admin_user_id'])) {
                     $adminRole = $this->roleModel->findByName('admin');
                     if ($adminRole) {
@@ -106,9 +94,6 @@ class TeamController extends ApiController
         }
     }
 
-    /**
-     * PUT /teams/{id} - Atualiza uma equipe
-     */
     public function update(int $id): void
     {
         $data = $this->getRequestData();
@@ -135,9 +120,6 @@ class TeamController extends ApiController
         }
     }
 
-    /**
-     * DELETE /teams/{id} - Remove uma equipe (soft delete)
-     */
     public function delete(int $id): void
     {
         $team = $this->teamModel->find($id);
@@ -160,14 +142,10 @@ class TeamController extends ApiController
         }
     }
 
-    /**
-     * POST /teams/{id}/members - Adiciona membro à equipe
-     */
     public function addMember(int $id): void
     {
         $data = $this->getRequestData();
         
-        // Valida campos obrigatórios
         $required = ['usuario_id', 'cargo_id'];
         $errors = $this->validateRequired($data, $required);
 
@@ -182,18 +160,13 @@ class TeamController extends ApiController
             return;
         }
 
-        // Verifica se já é membro
         if ($this->memberModel->isMember($id, $data['usuario_id'])) {
             $this->error('Usuário já é membro desta equipe', self::STATUS_BAD_REQUEST);
             return;
         }
 
         try {
-            $added = $this->teamModel->addMember(
-                $id,
-                $data['usuario_id'],
-                $data['cargo_id']
-            );
+            $added = $this->teamModel->addMember($id, $data['usuario_id'], $data['cargo_id']);
             
             if ($added) {
                 $this->success([], 'Membro adicionado com sucesso');
@@ -206,9 +179,6 @@ class TeamController extends ApiController
         }
     }
 
-    /**
-     * DELETE /teams/{id}/members/{user_id} - Remove membro da equipe
-     */
     public function removeMember(int $teamId, int $userId): void
     {
         $team = $this->teamModel->find($teamId);
@@ -236,9 +206,6 @@ class TeamController extends ApiController
         }
     }
 
-    /**
-     * GET /teams/{id}/tasks - Busca tarefas da equipe
-     */
     public function getTasks(int $id): void
     {
         $team = $this->teamModel->find($id);
@@ -248,7 +215,6 @@ class TeamController extends ApiController
         }
 
         $tasks = $this->teamModel->getTeamTasks($id);
-        
         $this->success(['tasks' => $tasks]);
     }
 }

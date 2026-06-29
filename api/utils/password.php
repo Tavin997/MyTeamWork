@@ -2,16 +2,12 @@
 
 namespace MyTeamWork\Utils;
 
-/**
- * Password Utils - Segurança para senhas
- * Usa password_hash com algoritmo Argon2id (mais seguro)
- */
 class Password
 {
     public static function hash(string $password): string
     {
         $options = [
-            'memory_cost' => 1 << 17, // 128MB
+            'memory_cost' => 1 << 17,
             'time_cost'   => 4,
             'threads'     => 2,
         ];
@@ -33,9 +29,6 @@ class Password
         ]);
     }
 
-    /**
-     * Gera senha aleatória segura
-     */
     public static function generate(int $length = 16): string
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';

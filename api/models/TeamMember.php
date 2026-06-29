@@ -18,9 +18,6 @@ class TeamMember extends BaseModel
         ];
     }
 
-    /**
-     * Verifica se usuário é membro da equipe
-     */
     public function isMember(int $teamId, int $userId): bool
     {
         $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE equipe_id = :team_id AND usuario_id = :user_id";
@@ -34,9 +31,6 @@ class TeamMember extends BaseModel
         return (int) $result['count'] > 0;
     }
 
-    /**
-     * Busca cargo do membro na equipe
-     */
     public function getMemberRole(int $teamId, int $userId): ?array
     {
         $sql = "
@@ -56,9 +50,6 @@ class TeamMember extends BaseModel
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Busca todas as equipes de um usuário
-     */
     public function getUserTeams(int $userId): array
     {
         $sql = "

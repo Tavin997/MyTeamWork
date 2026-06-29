@@ -20,9 +20,6 @@ class Task extends BaseModel
         ];
     }
 
-    /**
-     * Busca tarefas por usuário
-     */
     public function findByUser(int $userId, int $page = 1, int $limit = 50): array
     {
         $offset = ($page - 1) * $limit;
@@ -37,9 +34,6 @@ class Task extends BaseModel
         return $this->fetchAll($stmt);
     }
 
-    /**
-     * Busca tarefas por estado
-     */
     public function findByStatus(string $status, int $page = 1, int $limit = 50): array
     {
         $offset = ($page - 1) * $limit;
@@ -54,9 +48,6 @@ class Task extends BaseModel
         return $this->fetchAll($stmt);
     }
 
-    /**
-     * Busca tarefas por prioridade
-     */
     public function findByPriority(string $priority, int $page = 1, int $limit = 50): array
     {
         $offset = ($page - 1) * $limit;
@@ -71,9 +62,6 @@ class Task extends BaseModel
         return $this->fetchAll($stmt);
     }
 
-    /**
-     * Atualiza o estado da tarefa
-     */
     public function updateStatus(int $id, string $status): bool
     {
         $validStatuses = ['pendente', 'em_andamento', 'concluida', 'cancelada'];
@@ -87,9 +75,6 @@ class Task extends BaseModel
         return $stmt->execute([':status' => $status, ':id' => $id]);
     }
 
-    /**
-     * Busca tarefas com atribuições
-     */
     public function getWithAssignments(int $taskId): ?array
     {
         $sql = "
@@ -108,9 +93,6 @@ class Task extends BaseModel
         return $this->fetch($stmt);
     }
 
-    /**
-     * Estatísticas de tarefas por usuário
-     */
     public function getStats(int $userId): array
     {
         $sql = "

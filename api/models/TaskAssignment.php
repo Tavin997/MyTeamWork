@@ -17,9 +17,6 @@ class TaskAssignment extends BaseModel
         ];
     }
 
-    /**
-     * Busca atribuições de uma tarefa
-     */
     public function getTaskAssignments(int $taskId): array
     {
         $sql = "
@@ -34,9 +31,6 @@ class TaskAssignment extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Busca tarefas atribuídas a um usuário
-     */
     public function getUserTasks(int $userId, int $page = 1, int $limit = 50): array
     {
         $offset = ($page - 1) * $limit;
@@ -57,9 +51,6 @@ class TaskAssignment extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Remove todas as atribuições de uma tarefa
-     */
     public function removeTaskAssignments(int $taskId): bool
     {
         $sql = "DELETE FROM {$this->table} WHERE tarefa_id = :task_id";
@@ -67,18 +58,13 @@ class TaskAssignment extends BaseModel
         return $stmt->execute([':task_id' => $taskId]);
     }
 
-    /**
-     * Atribui múltiplos usuários a uma tarefa
-     */
     public function assignUsersToTask(int $taskId, array $userIds): bool
     {
         $this->beginTransaction();
 
         try {
-            // Remove atribuições existentes
             $this->removeTaskAssignments($taskId);
 
-            // Adiciona novas atribuições
             $sql = "INSERT INTO {$this->table} (usuario_id, tarefa_id) VALUES (:user_id, :task_id)";
             $stmt = $this->db->getConnection()->prepare($sql);
 

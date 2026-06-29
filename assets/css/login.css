@@ -1,0 +1,397 @@
+/* ============================================ */
+/* LOGIN - Estilos Minimalistas */
+/* ============================================ */
+
+:root {
+    --color-primary: #4F46E5;
+    --color-dark: #111827;
+    --color-dark-soft: #1F2937;
+    --color-gray: #6B7280;
+    --color-gray-light: #E5E7EB;
+    --color-gray-bg: #F9FAFB;
+    --color-white: #FFFFFF;
+    --color-error: #EF4444;
+    --color-success: #10B981;
+    
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.3s ease;
+}
+
+/* ============================================ */
+/* BASE */
+/* ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--color-gray-bg);
+    color: var(--color-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 72px;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================ */
+/* NAVBAR */
+/* ============================================ */
+#mainNav {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+#mainNav .navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-dark);
+    letter-spacing: -0.02em;
+}
+
+#mainNav .btn-outline-dark {
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.4rem 1.25rem;
+    border-color: var(--color-gray-light);
+    color: var(--color-dark);
+    transition: var(--transition);
+}
+
+#mainNav .btn-outline-dark:hover {
+    background: var(--color-dark);
+    color: var(--color-white);
+    border-color: var(--color-dark);
+}
+
+/* ============================================ */
+/* LOGIN CARD */
+/* ============================================ */
+.login-section {
+    padding: 40px 0;
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+}
+
+.login-card {
+    background: var(--color-white);
+    border-radius: var(--radius);
+    padding: 48px 40px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--color-gray-light);
+    transition: var(--transition);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+}
+
+.login-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-gray);
+    margin: 0;
+}
+
+/* ============================================ */
+/* FORMULÁRIO */
+/* ============================================ */
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.login-form .form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--color-dark);
+    margin-bottom: 6px;
+}
+
+.login-form .form-control {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-gray-light);
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: var(--color-white);
+    color: var(--color-dark);
+}
+
+.login-form .form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+    outline: none;
+}
+
+.login-form .form-control::placeholder {
+    color: var(--color-gray);
+    font-weight: 300;
+}
+
+/* Password Wrapper */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-control {
+    padding-right: 44px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-gray);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.password-toggle:hover {
+    color: var(--color-dark);
+}
+
+.password-toggle:focus {
+    outline: none;
+}
+
+/* Forgot link */
+.forgot-link {
+    font-size: 0.8rem;
+    color: var(--color-gray);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.forgot-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+/* Checkbox */
+.login-form .form-check {
+    margin-bottom: 24px;
+}
+
+.login-form .form-check-input {
+    border-radius: 4px;
+    border: 1.5px solid var(--color-gray-light);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.login-form .form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.login-form .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.login-form .form-check-label {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+    cursor: pointer;
+}
+
+/* Botão */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: var(--color-dark);
+    border-color: var(--color-dark);
+    transition: var(--transition);
+    margin-bottom: 16px;
+}
+
+.btn-login:hover {
+    background: var(--color-dark-soft);
+    border-color: var(--color-dark-soft);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Divisor */
+.login-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.login-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-gray-light);
+}
+
+.login-divider span {
+    background: var(--color-white);
+    padding: 0 16px;
+    font-size: 0.8rem;
+    color: var(--color-gray);
+    position: relative;
+    z-index: 1;
+}
+
+/* Footer */
+.login-footer {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.login-footer p {
+    font-size: 0.9rem;
+    color: var(--color-gray);
+}
+
+.register-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.register-link:hover {
+    text-decoration: underline;
+    color: #4338CA;
+}
+
+/* ============================================ */
+/* FEEDBACK */
+/* ============================================ */
+.feedback-message {
+    margin-top: 16px;
+    display: none;
+}
+
+.feedback-message.show {
+    display: block;
+}
+
+.feedback-message .alert {
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    margin: 0;
+}
+
+.feedback-message .alert-success {
+    background: #ECFDF5;
+    color: #065F46;
+    border-color: #A7F3D0;
+}
+
+.feedback-message .alert-danger {
+    background: #FEF2F2;
+    color: #991B1B;
+    border-color: #FECACA;
+}
+
+.feedback-message .alert-info {
+    background: #EFF6FF;
+    color: #1E40AF;
+    border-color: #BFDBFE;
+}
+
+/* ============================================ */
+/* RESPONSIVO */
+/* ============================================ */
+@media (max-width: 767.98px) {
+    body {
+        padding-top: 64px;
+    }
+    
+    .login-card {
+        padding: 32px 24px;
+        margin: 0 16px;
+    }
+    
+    .login-title {
+        font-size: 1.5rem;
+    }
+    
+    #mainNav .btn-outline-dark {
+        padding: 0.3rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-card {
+        padding: 24px 20px;
+        border-radius: var(--radius-sm);
+    }
+    
+    .login-title {
+        font-size: 1.25rem;
+    }
+    
+    .login-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .login-form .form-control {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+    
+    .btn-login {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================ */
+/* UTILITIES */
+/* ============================================ */
+.text-primary {
+    color: var(--color-primary) !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}

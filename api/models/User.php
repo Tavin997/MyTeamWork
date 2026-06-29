@@ -19,9 +19,6 @@ class User extends BaseModel
         ];
     }
 
-    /**
-     * Busca usuário por email
-     */
     public function findByEmail(string $email): ?array
     {
         $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
@@ -31,9 +28,6 @@ class User extends BaseModel
         return $this->fetch($stmt);
     }
 
-    /**
-     * Cria usuário com senha hash
-     */
     public function create(array $data): int
     {
         if (isset($data['senha'])) {
@@ -43,9 +37,6 @@ class User extends BaseModel
         return parent::create($data);
     }
 
-    /**
-     * Atualiza usuário com senha hash se fornecida
-     */
     public function update(int $id, array $data): bool
     {
         if (isset($data['senha'])) {
@@ -55,9 +46,6 @@ class User extends BaseModel
         return parent::update($id, $data);
     }
 
-    /**
-     * Verifica credenciais
-     */
     public function authenticate(string $email, string $password): ?array
     {
         $user = $this->findByEmail($email);
@@ -69,9 +57,6 @@ class User extends BaseModel
         return null;
     }
 
-    /**
-     * Busca tarefas atribuídas ao usuário
-     */
     public function getTasks(int $userId): array
     {
         $sql = "
@@ -87,9 +72,6 @@ class User extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Busca equipes do usuário
-     */
     public function getTeams(int $userId): array
     {
         $sql = "

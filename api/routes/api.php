@@ -2,21 +2,13 @@
 
 namespace MyTeamWork\Routes;
 
-use MyTeamWork\Controllers\AuthController;
-use MyTeamWork\Controllers\UserController;
-use MyTeamWork\Controllers\TaskController;
-use MyTeamWork\Controllers\TeamController;
+use MyTeamWork\Controller\AuthController;
+use MyTeamWork\Controller\UserController;
+use MyTeamWork\Controller\TaskController;
+use MyTeamWork\Controller\TeamController;
 
-/**
- * MyTeamWork - API Routes
- * Rotas RESTful com autenticação
- */
-
-// ============================================
-// ROTAS PÚBLICAS (Sem autenticação)
-// ============================================
-
-$router = [
+// Rotas públicas
+$publicRoutes = [
     'auth' => [
         'POST' => [
             '/login' => [AuthController::class, 'login'],
@@ -25,10 +17,7 @@ $router = [
     ],
 ];
 
-// ============================================
-// ROTAS PROTEGIDAS (Com autenticação)
-// ============================================
-
+// Rotas protegidas
 $protectedRoutes = [
     'auth' => [
         'POST' => [
@@ -96,15 +85,11 @@ $protectedRoutes = [
     ],
 ];
 
-// ============================================
-// ROTEADOR
-// ============================================
-
+// Roteador
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_GET['route'] ?? '';
 $path = '/' . ltrim($path, '/');
 
-// Busca parâmetros na URL (ex: /users/123)
 $params = [];
 $pathParts = explode('/', trim($path, '/'));
 $routePattern = '';
@@ -122,9 +107,10 @@ if (empty($routePattern)) {
     $routePattern = '/';
 }
 
-// Procura rota pública
 $found = false;
-foreach ($router as $routeGroup => $methods) {
+
+// Verifica rotas públicas
+foreach ($publicRoutes as $routeGroup => $methods) {
     foreach ($methods as $methodType => $routes) {
         if ($method !== $methodType) continue;
         
@@ -132,26 +118,13 @@ foreach ($router as $routeGroup => $methods) {
             if ($route === $routePattern) {
                 $found = true;
                 try {
-                    // Verifica autenticação se for rota protegida
-                    if (in_array($routeGroup, array_keys($protectedRoutes))) {
-                        $user = AuthController::authenticate();
-                        if (!$user) {
-                            http_response_code(401);
-                            echo json_encode([
-                                'success' => false,
-                                'message' => 'Token inválido ou não fornecido'
-                            ]);
-                            exit;
-                        }
-                    }
-                    
                     $controller = new $handler[0]();
-                    $method = $handler[1];
+                    $methodName = $handler[1];
                     
                     if (!empty($params)) {
-                        $controller->$method(...array_values($params));
+                        $controller->$methodName(...array_values($params));
                     } else {
-                        $controller->$method();
+                        $controller->$methodName();
                     }
                 } catch (\Exception $e) {
                     http_response_code(500);
@@ -167,7 +140,7 @@ foreach ($router as $routeGroup => $methods) {
     }
 }
 
-// Tenta rota protegida
+// Verifica rotas protegidas
 if (!$found) {
     foreach ($protectedRoutes as $routeGroup => $methods) {
         foreach ($methods as $methodType => $routes) {
@@ -177,7 +150,7 @@ if (!$found) {
                 if ($route === $routePattern) {
                     $found = true;
                     
-                    // Verifica autenticação
+                    // Autenticação
                     $user = AuthController::authenticate();
                     if (!$user) {
                         http_response_code(401);
@@ -190,12 +163,12 @@ if (!$found) {
                     
                     try {
                         $controller = new $handler[0]();
-                        $method = $handler[1];
+                        $methodName = $handler[1];
                         
                         if (!empty($params)) {
-                            $controller->$method(...array_values($params));
+                            $controller->$methodName(...array_values($params));
                         } else {
-                            $controller->$method();
+                            $controller->$methodName();
                         }
                     } catch (\Exception $e) {
                         http_response_code(500);
@@ -217,28 +190,6 @@ if (!$found) {
     http_response_code(404);
     echo json_encode([
         'success' => false,
-        'message' => 'Rota não encontrada',
-        'available_routes' => [
-            'POST /auth/login',
-            'POST /auth/register',
-            'GET /auth/me',
-            'GET /users',
-            'GET /users/{id}',
-            'POST /users',
-            'PUT /users/{id}',
-            'DELETE /users/{id}',
-            'GET /tasks',
-            'GET /tasks/{id}',
-            'POST /tasks',
-            'PUT /tasks/{id}',
-            'DELETE /tasks/{id}',
-            'GET /teams',
-            'GET /teams/{id}',
-            'POST /teams',
-            'PUT /teams/{id}',
-            'DELETE /teams/{id}',
-            'POST /teams/{id}/members',
-            'DELETE /teams/{id}/members/{user_id}'
-        ]
+        'message' => 'Rota não encontrada'
     ]);
 }
